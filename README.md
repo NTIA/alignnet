@@ -3,6 +3,7 @@ Speech quality estimation that uses dataset identifiers to separately learn:
 * mappings between audio and a reference dataset score space
 * mappings between the reference dataset score space and score spaces for every other dataset.
 
+# Installation
 ## Dependencies
 Create and activate the `alignnet` environment.
 ```
@@ -10,7 +11,67 @@ conda env create -f environment.yml
 conda activate alignnet
 ```
 
-## Datasets Used in 2024 Conference Paper
+## Installing alignnet package
+```
+pip install .
+```
+
+## Preparing data for training
+When training with multiple datasets need to do some work preformatting different datasets to make them look the same.
+Make a csv that has subjective score in column called `MOS` and path to audio file in column called `audio_path`.
+If your `audio_net` model requires transformed data you can pretransform it with `pretransform_data.py` and store paths to those files in a column called `transform_path` (e.g., for MOSNet recommend a column called `stft_path`).
+
+
+For each dataset split data with
+```
+python split_labeled_data.py /path/to/data/file.csv --output-dir /datasetX/splits/path
+```
+
+## General training commands
+
+### Pretraining MOSNet on a dataset
+In order to pretrain on a dataset you run
+```
+python /path/to/alignnet/train.py \
+data.dirs=[datasetX/splits/path] \
+--config-dir /path/to/alignnet/config/models/ --config-name pretrain-MOSNet.yaml \
+```
+Where `datasetX/splits/path` contains `train.csv`, `valid.csv`, and `test.csv` for that dataset.
+
+### Training MOSNet with AlignNet
+```
+python /path/to/alignnet/train.py \
+data.dirs=[/dataset1/splits/path,/dataset2/splits/path] \
+--config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml \
+```
+
+### Training MOSNet with AlignNet and MDF
+```
+python /path/to/alignnet/train.py \
+data.dirs=[dataset1/splits/path,dataset2/splits/path] \
+checkpoint.restore_file=/path/to/pretrained/model \
+--config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml \
+```
+
+## Examples
+## Training MOSNet with AlignNet and MDF with pretraining on Tencent
+```
+python /path/to/alignnet/train.py \
+data.dirs=[dataset1/splits/path,dataset2/splits/path] \
+checkpoint.restore_file=trained_models/pretrained-MOSNet-tencent \
+--config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
+```
+
+## MultiScaleConvolution example
+Talk about how code is `audio_net` agnostic. 
+Included second model that takes audio as an input, MultiScaleConvolution.
+```
+python /path/to/alignnet/train.py \
+data.dirs=[dataset1/splits/path,dataset2/splits/path] \
+--config-dir /path/to/alignnet/config/models/ --config-name alignnet-msc.yaml
+```
+# Gathering datasets used in 2024 Conference Paper
+
 * [Blizzard 2021](https://www.cstr.ed.ac.uk/projects/blizzard/data.html)
   *  Z.-H. Ling, X. Zhou, and S. King, "The Blizzard challenge 2021," in Proc. Blizzard Challenge Workshop, 2021.
 * [Blizzard 2008](https://www.cstr.ed.ac.uk/projects/blizzard/data.html)
@@ -31,38 +92,3 @@ conda activate alignnet
   * X. Dong and D. S. Williamson, "A pyramid recurrent network for predicting crowdsourced speech-quality ratings of real-world signals," in Proc. Interspeech, 2020.
 * [PSTN](https://github.com/ConferencingSpeech/ConferencingSpeech2022)
   * G. Mittag, R. Cutler, Y. Hosseinkashi, M. Revow, S. Srinivasan, N. Chande, and R. Aichner, “DNN no-reference PSTN speech quality prediction,” in Proc. Interspeech, 2020.
-
-## General training commands
-
-### Pretraining MOSNet on a dataset
-In order to pretrain on a dataset you run
-```
-python /path/to/alignnet/train.py \
-data.dirs=[/path/to/datasetX] \
---config-dir /path/to/alignnet/config/models/ --config-name pretrain-MOSNet.yaml \
-```
-Where `/path/to/datasetX` contains `train.csv`, `valid.csv`, and `test.csv` for that dataset.
-
-### Training MOSNet with AlignNet
-```
-python /path/to/alignnet/train.py \
-data.dirs=[/path/to/dataset1,/path/to/dataset2] \
---config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml \
-```
-
-### Training MOSNet with AlignNet and MDF
-```
-python /path/to/alignnet/train.py \
-data.dirs=[/path/to/dataset1,/path/to/dataset2] \
-checkpoint.restore_file=/path/to/pretrained/model \
---config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml \
-```
-
-## Examples
-## Training MOSNet with AlignNet and MDF with pretraining on Tencent
-```
-python /path/to/alignnet/train.py \
-data.dirs=[/path/to/dataset1,/path/to/dataset2] \
-checkpoint.restore_file=trained_models/pretrained-MOSNet-tencent \
---config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
-```
