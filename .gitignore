@@ -1,0 +1,6 @@
+outputs/*
+pyproject.toml
+*/__pycache__/*
+__pycache__/*
+*.ipynb_checkpoints/
+poetry.lock
