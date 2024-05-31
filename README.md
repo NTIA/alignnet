@@ -64,5 +64,5 @@ checkpoint.restore_file=/path/to/pretrained/model \
 python /path/to/alignnet/train.py \
 data.dirs=[/path/to/dataset1,/path/to/dataset2] \
 checkpoint.restore_file=trained_models/pretrained-MOSNet-tencent \
---config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml \
+--config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
 ```
