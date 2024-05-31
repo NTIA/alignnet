@@ -10,7 +10,7 @@ defaults:
 
 project:
   name: Dataset Alignment/Small Data
-  task: Pretrain
+  task: MOSNet-AlignNet
 
 finetune:
   restore_file: null
