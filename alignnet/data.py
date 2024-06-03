@@ -197,8 +197,7 @@ class FeatureData(AudioData):
         flatten : bool, optional
             Flatten representation into a single dimension, by default True
         dim_cutoff : _type_, optional
-            Max number of dimensions to consider. Useful if want to restrict number of mel bands in an FMS representation
-            where there are multiple sample rates present. By default None.
+            Max number of dimensions to consider. By default None.
         dim : int, optional
             Dimension on which to perform cutoff using dim_cutoff, by default 0
         """
