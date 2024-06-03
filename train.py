@@ -165,7 +165,7 @@ def post_train(model, audio_data, loggers, task=None):
 
 @hydra.main(config_path="alignnet/config", config_name="conf.yaml", version_base=None)
 def main(cfg: DictConfig) -> None:
-    if cfg.logging == "clearml":
+    if cfg.logging.logger == "clearml":
         task = Task.init(
             project_name=cfg.project.name,
             task_name=cfg.project.task,
