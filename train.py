@@ -237,9 +237,8 @@ def main(cfg: DictConfig) -> None:
         # initialize model
         model_class = hydra.utils.get_class(cfg.model._target_)
         # Path to pretrained model checkpoint
-        model_path = os.path.join(cfg.finetune.restore_file)
-
-        restore_cfg_path = os.path.join(os.path.dirname(model_path), "config.yaml")
+        model_path = os.path.join(cfg.finetune.restore_file, "model.ckpt")
+        restore_cfg_path = os.path.join(cfg.finetune.restore_file, "config.yaml")
 
         with open(restore_cfg_path, "r") as f:
             restore_yaml = yaml.safe_load(f)

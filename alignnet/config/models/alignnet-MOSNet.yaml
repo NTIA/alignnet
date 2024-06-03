@@ -10,7 +10,7 @@ defaults:
   - _self_
 
 project:
-  name: Dataset Alignment/Small Data
+  name: Dataset Alignment
   task: MOSNet-AlignNet
 
 finetune:
