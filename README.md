@@ -1,10 +1,17 @@
 # Dataset Alignment
-Speech quality estimation that uses dataset identifiers to separately learn:
-* mappings between audio and a reference dataset score space
-* mappings between the reference dataset score space and score spaces for every other dataset.
+This code corresponds to the paper "AlignNet: Learning dataset score alignment functions to enable better training of speech quality estimators" Jaden Pieper, Steve Voran [Link to Paper here](XXX).
+
+AlignNet improves the training of no-reference (NR) speech quality estimators with multiple, independent datasets. AlignNet uses an AudioNet to generate intermediate score estimates before using the Aligner to map intermediate estimates to the appropriate score range.
+AlignNet is intentionally designed to be independent of the choice of AudioNet.
+
+This repository contains implementations of two different AudioNet choices: [MOSNet](https://arxiv.org/abs/1904.08352) and a novel multi-scale convolution approach. 
+
+MOSNet demonstrates a network that takes the STFT of an audio signal as its input and the multi-scale convolution network is provided primarily as an example of a network that takes raw audio as an input.
 
 # Installation
 ## Dependencies
+There are two included environment files. `environment.yml` has the dependencies required to train with alignnet, but does not impose version requirements. It is thus susceptible to issues in the future if packages deprecate methods or have major backwards compatibility breaks. On the otherhand `environment-paper.yml` contains the exact versions of the packages that were used for all the results reported in our paper. 
+
 Create and activate the `alignnet` environment.
 ```
 conda env create -f environment.yml
@@ -19,7 +26,7 @@ pip install .
 ## Preparing data for training
 When training with multiple datasets need to do some work preformatting different datasets to make them look the same.
 Make a csv that has subjective score in column called `MOS` and path to audio file in column called `audio_path`.
-If your `audio_net` model requires transformed data you can pretransform it with `pretransform_data.py` and store paths to those files in a column called `transform_path` (e.g., for MOSNet recommend a column called `stft_path`).
+If your `audio_net` model requires transformed data you can transform it prior to training with `pretransform_data.py` and store paths to those files in a column called `transform_path` (e.g., for MOSNet recommend a column called `stft_path`).
 
 
 For each dataset split data with
@@ -51,6 +58,15 @@ python /path/to/alignnet/train.py \
 data.dirs=[dataset1/splits/path,dataset2/splits/path] \
 checkpoint.restore_file=/path/to/pretrained/model \
 --config-dir /path/to/alignnet/config/models/ --config-name alignnet-MOSNet.yaml \
+```
+
+### Training MOSNet in conventional way
+Multiple datasets, no alignment.
+```
+python /path/to/alignnet/train.py \
+data.dirs=[dataset1/splits/path,dataset2/splits/path] \
+checkpoint.restore_file=/path/to/pretrained/model \
+--config-dir /path/to/alignnet/config/models/ --config-name pretrain-MOSNet.yaml \
 ```
 
 ## Examples
