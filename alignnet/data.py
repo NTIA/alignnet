@@ -254,7 +254,7 @@ class AudioDataModule(pl.LightningDataModule):
     def __init__(
         self,
         data_dirs,
-        batch_size=32,
+        batch_size=16,
         num_workers=1,
         persistent_workers=True,
         DataClass=AudioData,

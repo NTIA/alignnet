@@ -26,7 +26,6 @@ data:
   data_dirs: ???
   batch_size: 16
   num_workers: 6
-  persistent_workers: true
   transform_time: get
   cache: false
   fs: null
@@ -41,7 +40,7 @@ optimization:
   _target_: pytorch_lightning.Trainer
   accelerator: gpu
   devices:
-  - 1
+  - 0
   log_every_n_steps: 5
   max_epochs: 200
   precision: 16-mixed
