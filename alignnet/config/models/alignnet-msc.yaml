@@ -162,3 +162,6 @@ checkpoint:
 optimizer:
   _target_: alignnet.OptimizerWrapper
   class_name: torch.optim.Adam
+
+transform:
+  _target_: alignnet.NoneTransform
