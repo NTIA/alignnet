@@ -7,6 +7,7 @@ hydra:
 defaults:
   - logging: clearml
   - loss: L2
+  - _self_
 
 project:
   name: Dataset Alignment
