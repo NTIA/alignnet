@@ -61,14 +61,7 @@ network:
     _target_: alignnet.MOSNet
   aligner:
     _target_: alignnet.LinearSequenceAligner
-    layer_dims:
-    - 16
-    - 16
-    - 16
-    - 16
-    - 1
     reference_index: 0
-    embedding_dim: 10
   audio_net_freeze_epochs: 1
 
 checkpoint:

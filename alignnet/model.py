@@ -594,7 +594,7 @@ class LinearSequenceAligner(nn.Module):
         reference_index,
         num_datasets,
         embedding_dim=10,
-        layer_dims=[16, 32, 16, 1],
+        layer_dims=[16, 16, 16, 16, 1],
     ):
         """
         Aligner network for dataset alignment.
@@ -613,7 +613,7 @@ class LinearSequenceAligner(nn.Module):
         embedding_dim : int, optional
             Size of the dataset index embedding, by default 10
         layer_dims : list, optional
-            Dimensions of the Aligner fully connected layers, by default [16, 32, 16, 1]
+            Dimensions of the Aligner fully connected layers, by default [16, 16, 16, 16, 1]
         """
         super().__init__()
         self.reference_index = reference_index
