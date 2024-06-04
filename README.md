@@ -23,10 +23,11 @@ conda activate alignnet
 pip install .
 ```
 
-## Preparing data for training
+# Preparing data for training
 When training with multiple datasets some work must first be done to format them in a consistent manner so they can all be loaded in the same way.
 For each dataset one must first make a csv that has subjective score in column called `MOS` and path to audio file in column called `audio_path`.
-If your `audio_net` model requires transformed data you can transform it prior to training with `pretransform_data.py` and store paths to those transformed representation files in a column called `transform_path` (e.g., for MOSNet recommend a column called `stft_path`).
+
+If your `audio_net` model requires transformed data you can transform it prior to training with `pretransform_data.py` (see `python pretransform_data.py --help` for more information) and store paths to those transformed representation files in a column called `transform_path`. For example MOSNet uses the STFT of audio as an input. For more efficient training, pretransforming the audio into STFT representations, saving them, and including a column called `stft_path` in the csv is recommended.
 
 
 For each dataset split data with
@@ -36,7 +37,7 @@ python split_labeled_data.py /path/to/data/file.csv --output-dir /datasetX/split
 This generates `train.csv`, `valid.csv`, and `test.csv` in `/datasetX/splits/path`.
 Additional options for splitting can be seen via `python split_labeled_data.py --help`, including creating multiple independent splits and changing the amount of data placed into each split.
 
-## General training commands
+# Training with AlignNet
 
 ### Pretraining MOSNet on a dataset
 In order to pretrain on a dataset you run
@@ -66,8 +67,8 @@ finetune.restore_file=/path/to/alignnet/pretrained/model \
 Multiple datasets, no alignment.
 ```
 python /path/to/alignnet/train.py \
+project.task=Conventional-MOSNet \
 data.data_dirs=[dataset1/splits/path,dataset2/splits/path] \
-finetune.restore_file=/path/to/alignnet/pretrained/model \
 --config-dir /path/to/alignnet/alignnet/config/models/ --config-name pretrain-MOSNet.yaml
 ```
 
@@ -89,6 +90,9 @@ python /path/to/alignnet/train.py \
 data.data_dirs=[dataset1/splits/path,dataset2/splits/path] \
 --config-dir /path/to/alignnet/alignnet/config/models/ --config-name alignnet-msc.yaml
 ```
+
+# Using AlignNet models at inference
+
 # Gathering datasets used in 2024 Conference Paper
 All of the data used in the paper can be found through the following links and references.
 
