@@ -28,6 +28,8 @@ When training with multiple datasets some work must first be done to format them
 For each dataset one must first make a csv that has subjective score in column called `MOS` and path to audio file in column called `audio_path`.
 
 If your `audio_net` model requires transformed data you can transform it prior to training with `pretransform_data.py` (see `python pretransform_data.py --help` for more information) and store paths to those transformed representation files in a column called `transform_path`. For example MOSNet uses the STFT of audio as an input. For more efficient training, pretransforming the audio into STFT representations, saving them, and including a column called `stft_path` in the csv is recommended.
+To use the appropriate column during training the `data.pathcol` must be set to right value.
+For examples see [MOSNet](alignnet/config/models/pretrain-MOSNet.yaml) or [MultiScaleConvolution](alignnet/config/models/pretrain-msc.yaml).
 
 
 For each dataset split data with
