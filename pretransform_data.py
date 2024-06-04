@@ -204,13 +204,9 @@ if __name__ == "__main__":
     )
     parser.add_argument("datapath", type=str, help="Path to data to transform")
     parser.add_argument(
-        "--outpath",
+        "outpath",
         type=str,
-        default="transform",
-        help=(
-            "Path where transformed version of data is stored. Defaults to "
-            "creating directory 'transform' in the working directory."
-        ),
+        help=("Path where transformed version of data is stored."),
     )
 
     parser.add_argument(
