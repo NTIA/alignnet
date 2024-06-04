@@ -179,7 +179,7 @@ def main(datapath, outpath, transform_name, csv_list, **kwargs):
             target_fs=kwargs["target_fs"],
         )
     else:
-        print("Do as we have been with the os.walk")
+        print("Walk through the input directory")
         transform_path_walk(
             datapath=datapath,
             outpath=outpath,
@@ -206,10 +206,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "--outpath",
         type=str,
-        default=None,
+        default="transform",
         help=(
             "Path where transformed version of data is stored. Defaults to "
-            "creating directory in same parent folder as datapath with 'transform' appended."
+            "creating directory 'transform' in the working directory."
         ),
     )
 

@@ -36,7 +36,7 @@ class MelTransform:
         self.win_overlap = win_overlap
         self.n_mels = n_mels
 
-    def transform(self, audio, sample_rate, n_mels=None, device="cpu"):
+    def transform(self, audio, sample_rate, n_mels=None, device="cpu", **kwargs):
         """
         Perform mel spectrogram transform
 
@@ -93,7 +93,7 @@ class STFTTransform:
         self.fft_win_length = fft_win_length
         self.win_overlap = win_overlap
 
-    def transform(self, audio):
+    def transform(self, audio, **kwargs):
         """
         Perform a STFT on audio.
 
