@@ -162,14 +162,13 @@ def main(args, n=None):
 
 if __name__ == "__main__":
     parser = ArgumentParser(
-        prog="SplitDataset",
         description="Split a label_file containing target and pathcol for audio file into train, test, and valid csvs.",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         "label_file",
         type=str,
-        help=("Path to file with subjective scores and file paths."),
+        help=("Path and filename to file with subjective scores and file paths."),
     )
 
     parser.add_argument(
