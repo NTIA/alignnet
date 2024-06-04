@@ -1,2 +1,4 @@
 defaults:
+  - logging: none
+  - loss: L2
   - override hydra/help: train_help

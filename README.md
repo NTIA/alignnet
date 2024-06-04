@@ -40,6 +40,28 @@ This generates `train.csv`, `valid.csv`, and `test.csv` in `/datasetX/splits/pat
 Additional options for splitting can be seen via `python split_labeled_data.py --help`, including creating multiple independent splits and changing the amount of data placed into each split.
 
 # Training with AlignNet
+Setting up training runs is configured via [Hydra](https://hydra.cc/docs/intro/).
+Basic examples of configuration files can be found in [model/config](alignnet/config/models).
+
+Some basic training help can be found with 
+
+```
+python train.py --help
+```
+
+To see an example config file and all the overrideable parameters for training MOSNet with AlignNet run
+```
+python train.py --config-dir alignnet/config/models --config-name=alignnet-MOSNet --cfg job
+```
+Here the `--cfg job` shows the configuration for this job without running the code.
+
+If you are not training with a [clearML](https://clear.ml/) server be sure to set `logging=none`.
+To change the number of workers used for data loading, override the `data.num_workers` parameter, which defaults to 6.
+
+As an exmaple and to confirm you have appropriately overridden these parameters you could run 
+```
+python train.py logging=none data.num_workers=4 --config-dir alignnet/config/models --config-name=alignnet-MOSNet --cfg job
+```
 
 ### Pretraining MOSNet on a dataset
 In order to pretrain on a dataset you run

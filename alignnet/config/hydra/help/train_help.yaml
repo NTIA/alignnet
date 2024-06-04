@@ -9,8 +9,8 @@ footer: |-
 template: |-
   ${hydra.help.header}
 
-  This is ${hydra.help.app_name}!
-  You can choose a db driver by appending
+  This is the ${hydra.help.app_name} training program!
+  
   == Configuration groups ==
   Compose your configuration from those groups (db=mysql)
 
@@ -18,10 +18,22 @@ template: |-
 
   == Config ==
   This is the config generated for this run.
-  You can override everything, for example:
-  python my_app.py db.user=foo db.pass=bar
+  You can override everything, for example to set the logger to none and loss to L1 run:
+  
+  ```
+  python train.py logging=none loss=L1 --help
+  ```
+  
+  For another example, to see the config file and all overrideable parameters for 
+  training MOSNet with AlignNet run:
+  ```
+  python train.py --config-dir alignnet/config/models --config-name=alignnet-MOSNet --cfg job
+  ```
   -------
   $CONFIG
   -------
   
+  To see the config of an example command directly without running it add 
+  `--cfg job` to your command.
+
   ${hydra.help.footer}
