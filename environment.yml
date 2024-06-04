@@ -11,7 +11,6 @@ dependencies:
   - IPython
   - matplotlib
   - numpy
-  - pandas
   - pre-commit
   - poetry
   - pytorch
@@ -22,6 +21,7 @@ dependencies:
   - torchaudio
   - pip
   - pip:
+    - pandas
     - pylance
     - sox
     - soundfile
