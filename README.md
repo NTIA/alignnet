@@ -58,7 +58,7 @@ Here the `--cfg job` shows the configuration for this job without running the co
 If you are not training with a [clearML](https://clear.ml/) server be sure to set `logging=none`.
 To change the number of workers used for data loading, override the `data.num_workers` parameter, which defaults to 6.
 
-As an exmaple and to confirm you have appropriately overridden these parameters you could run 
+As an example and to confirm you have appropriately overridden these parameters you could run 
 ```
 python train.py logging=none data.num_workers=4 --config-dir alignnet/config/models --config-name=alignnet-MOSNet --cfg job
 ```
