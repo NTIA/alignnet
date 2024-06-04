@@ -44,43 +44,43 @@ Additional options for splitting can be seen via `python split_labeled_data.py -
 ### Pretraining MOSNet on a dataset
 In order to pretrain on a dataset you run
 ```
-python /path/to/alignnet/train.py \
-data.data_dirs=[datasetX/splits/path] \
---config-dir /path/to/alignnet/alignnet/config/models/ --config-name pretrain-MOSNet.yaml
+python path/to/alignnet/train.py \
+data.data_dirs=[/absolute/path/datasetX/splits/path] \
+--config-dir path/to/alignnet/alignnet/config/models/ --config-name pretrain-MOSNet.yaml
 ```
-Where `datasetX/splits/path` contains `train.csv`, `valid.csv`, and `test.csv` for that dataset.
+Where `/absolute/path/datasetX/splits/path` contains `train.csv`, `valid.csv`, and `test.csv` for that dataset.
 
 ### Training MOSNet with AlignNet
 ```
-python /path/to/alignnet/train.py \
-data.data_dirs=[/dataset1/splits/path,/dataset2/splits/path] \
---config-dir /path/to/alignnet/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
+python path/to/alignnet/train.py \
+data.data_dirs=[/absolute/path/dataset1/splits/path,/absolute/path/dataset2/splits/path] \
+--config-dir path/to/alignnet/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
 ```
 
 ### Training MOSNet with AlignNet and MDF
 ```
-python /path/to/alignnet/train.py \
-data.data_dirs=[dataset1/splits/path,dataset2/splits/path] \
-finetune.restore_file=/path/to/alignnet/pretrained/model \
---config-dir /path/to/alignnet/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
+python path/to/alignnet/train.py \
+data.data_dirs=[/absolute/path/dataset1/splits/path,/absolute/path/dataset2/splits/path] \
+finetune.restore_file=path/to/alignnet/pretrained/model \
+--config-dir path/to/alignnet/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
 ```
 
 ### Training MOSNet in conventional way
 Multiple datasets, no alignment.
 ```
-python /path/to/alignnet/train.py \
+python path/to/alignnet/train.py \
 project.task=Conventional-MOSNet \
-data.data_dirs=[dataset1/splits/path,dataset2/splits/path] \
---config-dir /path/to/alignnet/alignnet/config/models/ --config-name pretrain-MOSNet.yaml
+data.data_dirs=[/absolute/path/dataset1/splits/path,/absolute/path/dataset2/splits/path] \
+--config-dir path/to/alignnet/alignnet/config/models/ --config-name pretrain-MOSNet.yaml
 ```
 
 ## Examples
 ## Training MOSNet with AlignNet and MDF with pretraining on Tencent
 ```
-python /path/to/alignnet/train.py \
-data.data_dirs=[dataset1/splits/path,dataset2/splits/path] \
-finetune.restore_file=/path/to/alignnet/trained_models/pretrained-MOSNet-tencent \
---config-dir /path/to/alignnet/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
+python path/to/alignnet/train.py \
+data.data_dirs=[/absolute/path/dataset1/splits/path,/absolute/path/dataset2/splits/path] \
+finetune.restore_file=path/to/alignnet/trained_models/pretrained-MOSNet-tencent \
+--config-dir path/to/alignnet/alignnet/config/models/ --config-name alignnet-MOSNet.yaml
 ```
 
 ## MultiScaleConvolution example
@@ -88,9 +88,9 @@ Training NR speech estimators with AlignNet is intentionally designed to be agno
 To demonstrate this we include code for a rudimentary network that takes raw audio in as an input and trains separate convolutional networks on multiple time scales that are then aggregated into a single network component.
 This network is defined as `alignnet.MultiScaleConvolution` and can be trained via:
 ```
-python /path/to/alignnet/train.py \
-data.data_dirs=[dataset1/splits/path,dataset2/splits/path] \
---config-dir /path/to/alignnet/alignnet/config/models/ --config-name alignnet-msc.yaml
+python path/to/alignnet/train.py \
+data.data_dirs=[/absolute/path/dataset1/splits/path,/absolute/path/dataset2/splits/path] \
+--config-dir path/to/alignnet/alignnet/config/models/ --config-name alignnet-msc.yaml
 ```
 
 # Using AlignNet models at inference
