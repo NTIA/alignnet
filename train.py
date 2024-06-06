@@ -18,6 +18,7 @@ import alignnet
 # Load clearml Task only if clearml is imported
 try:
     from clearml import Task
+    from clearml.backend_api.session.defs import MissingConfigError
 except ModuleNotFoundError as err:
 
     def Task(**kwargs):
@@ -166,10 +167,15 @@ def post_train(model, audio_data, loggers, task=None):
 @hydra.main(config_path="alignnet/config", config_name="conf.yaml", version_base=None)
 def main(cfg: DictConfig) -> None:
     if cfg.logging.logger == "clearml":
-        task = Task.init(
-            project_name=cfg.project.name,
-            task_name=cfg.project.task,
-        )
+        try:
+            task = Task.init(
+                project_name=cfg.project.name,
+                task_name=cfg.project.task,
+            )
+        except MissingConfigError as E:
+            print(f"{E}")
+            print(f"If you do not want to install clearML and avoid this error in the future set `logging=none` override.")
+            task = None
     else:
         task = None
     print("Working directory : {}".format(os.getcwd()))
