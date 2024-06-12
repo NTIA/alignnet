@@ -1,0 +1,22 @@
+defaults:
+  - input_type: stft
+  - override hydra/help: inference_help
+  - _self_
+output:
+  file: ???
+
+data:
+  data_files: ???
+  cache: false
+  transform_time: get
+  target: null
+
+dataclass:
+  _target_: hydra.utils.get_class
+
+model:
+  path: ???
+  dataset_index: reference
+
+transform:
+  _target_: alignnet.NoneTransform

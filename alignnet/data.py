@@ -90,7 +90,10 @@ class AudioData(Dataset):
 
     def __getitem__(self, idx):
         dataset = self.score_file.loc[idx, "Dataset_Indicator"]
-        mos = self.score_file.loc[idx, self.target]
+        if self.target is not None:
+            mos = self.score_file.loc[idx, self.target]
+        else:
+            mos = None
         if self.target_transform is not None:
             mos = self.target_transform(mos, dataset)
 
@@ -210,7 +213,12 @@ class FeatureData(AudioData):
 
     def __getitem__(self, idx):
         dataset = self.score_file.loc[idx, "Dataset_Indicator"]
-        mos = self.score_file.loc[idx, self.target]
+        
+        if self.target is not None:
+            mos = self.score_file.loc[idx, self.target]
+        else:
+            mos = None
+        
         if self.target_transform is not None:
             mos = self.target_transform(mos, int(dataset))
 
@@ -306,7 +314,8 @@ class AudioDataModule(pl.LightningDataModule):
 
         If stage == 'test' then only test data is loaded.
 
-        If stage == 'predict' then predict data is loaded. This has not been tested.
+        If stage == 'predict' then self.data_dirs should be full paths to the specific 
+        csv files to run predictions on.
 
         Parameters
         ----------
@@ -338,9 +347,8 @@ class AudioDataModule(pl.LightningDataModule):
                 **self.data_class_kwargs,
             )
         elif stage == "predict":
-            predict_paths = self.find_datasubsets(self.data_dirs, "predict")
             self.predict = self.DataClass(
-                data_files=predict_paths,
+                data_files=self.data_dirs,
                 **self.data_class_kwargs,
             )
 
