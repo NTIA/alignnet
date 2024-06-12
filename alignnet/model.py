@@ -666,7 +666,7 @@ class AlignNet(nn.Module):
         self.aligner = aligner
         self.reference_index = self.aligner.reference_index
 
-        if aligner_corr_threshold is not None:
+        if aligner_corr_threshold is not None and aligner_corr_threshold > -1:
             # We want to freeze aligner (and ideally ensure it is not changing
             # estimations) until we see a validation correlation above
             # aligner_corr_threshold.
