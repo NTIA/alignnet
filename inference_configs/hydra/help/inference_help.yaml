@@ -12,7 +12,7 @@ template: |-
   This is the ${hydra.help.app_name} inference program!
 
   To use a model at inference you must override three parameters:
-  * model.path : str pointing to the path containing a trianed model 
+  * model.path : str pointing to the path containing a trained model 
     (must have a `model.ckpt` and `config.yaml` file in path.)
   * data.data_files : list containing paths to csv files with file paths to perform inference on.
     The path name of the csv must correspond to `data.pathcol` which can be overriden.
