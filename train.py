@@ -174,7 +174,9 @@ def main(cfg: DictConfig) -> None:
             )
         except MissingConfigError as E:
             print(f"{E}")
-            print(f"If you do not want to install clearML and avoid this error in the future set `logging=none` override.")
+            print(
+                f"If you do not want to install clearML and avoid this error in the future set `logging=none` override."
+            )
             task = None
     else:
         task = None
