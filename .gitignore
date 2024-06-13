@@ -4,3 +4,4 @@ pyproject.toml
 __pycache__/*
 *.ipynb_checkpoints/
 poetry.lock
+*.csv
