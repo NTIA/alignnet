@@ -125,7 +125,6 @@ class AudioData(Dataset):
                     # We have resampled, so the transform doesn't need to account for it
                     audio = self.transform.transform(audio)
 
-            # TODO figure out if this is the right place to do this
             audio = audio.float()
             if hasattr(self, "wavs"):
                 self.wavs[audio_path] = audio
@@ -266,9 +265,9 @@ class AudioDataModule(pl.LightningDataModule):
         num_workers=1,
         persistent_workers=True,
         DataClass=AudioData,
-        collate_type="padding",  # TODO - this is a bit messy...
+        collate_type="padding",
         data_percent=1,
-        **kwargs,  # TODO: Documentation needs to discuss how kwargs are used to pass arguments to DataClass on AudioDataModule.setup(...)
+        **kwargs,
     ):
         """
         Primary audio data module that prepares data for training, testing, or predictions.
@@ -290,6 +289,10 @@ class AudioDataModule(pl.LightningDataModule):
         collate_type : str, optional
             String that determines what type of collate function is used, by default
             "padding"
+        **kwargs : optional
+            Additional arguments are passed to the DataClass when instantiated in 
+            AudioDataModule.setup()
+
         """
         super().__init__()
 

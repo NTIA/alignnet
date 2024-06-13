@@ -1,3 +1,9 @@
+hydra:
+    run:
+        dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job:
+        chdir: False
+
 defaults:
   - input_type: stft
   - override hydra/help: inference_help

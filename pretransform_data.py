@@ -32,7 +32,7 @@ def load_audio(fpath, target_fs=None):
     """
     audio, sample_rate = torchaudio.load(fpath)
     if target_fs is not None and sample_rate != target_fs:
-        # We have a target fs and the current smaple rate is not it => resample!
+        # We have a target fs and the current sample rate is not it => resample!
         resampler = torchaudio.transforms.Resample(
             orig_freq=sample_rate,
             new_freq=target_fs,

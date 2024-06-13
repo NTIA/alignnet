@@ -175,7 +175,7 @@ if __name__ == "__main__":
         "--output-dir",
         type=str,
         default="data-splits",
-        help="path where data splits will be stored",
+        help="Path where data splits will be stored.",
     )
 
     parser.add_argument(

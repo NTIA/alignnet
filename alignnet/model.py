@@ -100,7 +100,6 @@ class LinearSequence(nn.Module):
         layer_dims : list
             List of layer dimensions, not including input features (these are specificed by in_features).
         """
-        # TODO - the inputs for this are poorly defined/redundant. A refactor could really improve this/make more generalizable.
         super().__init__()
         if layer_dims is not None and n_layers != len(layer_dims):
             n_layers = len(layer_dims)
@@ -352,7 +351,6 @@ class AudioConvolutionalBlock(nn.Module):
             padding=self.padding,
         )
         model_list.append(conv)
-        # TODO - figure out what the batchnorm num_features needs to be
         if self.batch_norm:
             bn = nn.BatchNorm1d(self.out_channels)
             model_list.append(bn)
@@ -620,7 +618,7 @@ class LinearSequenceAligner(nn.Module):
         super().__init__()
         self.reference_index = reference_index
         self.num_datasets = num_datasets
-        # TODO - this should probs be smart
+        
         self.embedding_dim = embedding_dim
         self.embedding = torch.nn.Embedding(
             num_datasets, embedding_dim=self.embedding_dim
@@ -798,9 +796,7 @@ class Model(pl.LightningModule):
             All data in a training batch.
         """
         audio, mos, dataset = training_batch
-        mos = mos.float()  # TODO - not sure this is the right place for this
-        # if self._shift_mean:
-        #     audio = audio - self.mean
+        mos = mos.float() 
 
         mean_estimate = self.network(audio, dataset)
         # If audio is 2-D (e.g. wav2vec representation) needs to be squeezed in diminsion 1 here

@@ -195,7 +195,6 @@ def main(cfg: DictConfig) -> None:
 
     data_class = hydra.utils.instantiate(cfg.dataclass)
 
-    # TODO - replace with recursive instantiation, available in new Hydra
     audio_data = hydra.utils.instantiate(
         cfg.data, transform=transform, DataClass=data_class
     )
@@ -235,11 +234,10 @@ def main(cfg: DictConfig) -> None:
         cfg.network, aligner={"num_datasets": num_datasets}
     )
     loss = hydra.utils.instantiate(cfg.loss)
-    # TODO - replace with recursive instantiation, available in new Hydra
+
     optimizer = hydra.utils.instantiate(cfg.optimizer, lr=cfg.common.lr)
 
     # initialize model
-    # TODO - update this with load_model function that uses trained_model folder
     if cfg.finetune.restore_file is not None:
         print(f"Loading model from checkpoint: {cfg.finetune.restore_file}")
         # initialize model
