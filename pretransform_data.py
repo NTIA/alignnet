@@ -210,6 +210,21 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "--target-fs",
+        default=None,
+        type=int,
+        help="Sample rate to resample audio to prior to transformation. If None, no resampling done.",
+    )
+
+    parser.add_argument(
+        "--fft-win-length", default=512, type=int, help="Window length for an STFT."
+    )
+
+    parser.add_argument(
+        "--win-overlap", default=256, type=int, help="Window overlap for an STFT."
+    )
+
+    parser.add_argument(
         "--csv-list",
         type=str,
         default=None,
@@ -226,20 +241,6 @@ if __name__ == "__main__":
         help="Take log10 of representations.",
     )
 
-    parser.add_argument(
-        "--fft-win-length", default=512, type=int, help="Window length for an STFT."
-    )
-
-    parser.add_argument(
-        "--win-overlap", default=256, type=int, help="Window overlap for an STFT."
-    )
-
-    parser.add_argument(
-        "--target-fs",
-        default=None,
-        type=int,
-        help="Sample rate to resample audio to prior to transformation. If None, no resampling done.",
-    )
 
     args = parser.parse_args()
 
