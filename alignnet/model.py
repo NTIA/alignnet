@@ -44,7 +44,9 @@ def load_model(trained_model_path):
 
     model_path = os.path.join(trained_model_path, "model.ckpt")
     # Initialize model
-    model = model_class.load_from_checkpoint(model_path, network=network)
+    model = model_class.load_from_checkpoint(
+        model_path, network=network, map_location=lambda storage, loc: storage
+    )
 
     return model
 
