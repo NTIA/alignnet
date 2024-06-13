@@ -33,7 +33,7 @@ More generally, the column name must match the value of `data.pathcol`.
 For examples see [MOSNet](alignnet/config/models/pretrain-MOSNet.yaml) or [MultiScaleConvolution](alignnet/config/models/pretrain-msc.yaml).
 
 
-For each dataset split data with
+For each dataset, slit the data into training, validation, and testing portions with
 ```
 python split_labeled_data.py /path/to/data/file.csv --output-dir /datasetX/splits/path
 ```
@@ -98,7 +98,7 @@ data.data_dirs=[/absolute/path/dataset1/splits/path,/absolute/path/dataset2/spli
 ```
 
 ## Examples
-## Training MOSNet with AlignNet and MDF with pretraining on Tencent
+## Training MOSNet with AlignNet and MDF starting with MOSNet that has been pretrained on Tencent dataset
 ```
 python path/to/alignnet/train.py \
 data.data_dirs=[/absolute/path/dataset1/splits/path,/absolute/path/dataset2/splits/path] \
