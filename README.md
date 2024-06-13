@@ -1,10 +1,11 @@
 # Dataset Alignment
 This code corresponds to the paper "AlignNet: Learning dataset score alignment functions to enable better training of speech quality estimators" Jaden Pieper, Steve Voran [Link to Paper here](XXX).
 
-AlignNet improves the training of no-reference (NR) speech quality estimators with multiple, independent datasets. AlignNet uses an AudioNet to generate intermediate score estimates before using the Aligner to map intermediate estimates to the appropriate score range.
+When training a no-reference (NR) speech quality estimator, multiple datasets provide more information and can thus lead to better training. But they often are inconsistent in the sense that they use different subjective testing scales, or the exact same scale is used differently by test subjects due to the corpus effect.
+AlignNet improves the training of NR speech quality estimators with multiple, independent datasets. AlignNet uses an AudioNet to generate intermediate score estimates before using the Aligner to map intermediate estimates to the appropriate score range.
 AlignNet is intentionally designed to be independent of the choice of AudioNet.
 
-This repository contains implementations of two different AudioNet choices: [MOSNet](https://arxiv.org/abs/1904.08352) and a novel multi-scale convolution approach. 
+This repository contains implementations of two different AudioNet choices: [MOSNet](https://arxiv.org/abs/1904.08352) and a simple example of a novel multi-scale convolution approach. 
 
 MOSNet demonstrates a network that takes the STFT of an audio signal as its input and the multi-scale convolution network is provided primarily as an example of a network that takes raw audio as an input.
 
@@ -28,7 +29,7 @@ When training with multiple datasets some work must first be done to format them
 For each dataset one must first make a csv that has subjective score in column called `MOS` and path to audio file in column called `audio_path`.
 
 If your `audio_net` model requires transformed data you can transform it prior to training with `pretransform_data.py` (see `python pretransform_data.py --help` for more information) and store paths to those transformed representation files in a column called `transform_path`. For example MOSNet uses the STFT of audio as an input. For more efficient training, pretransforming the audio into STFT representations, saving them, and including a column called `stft_path` in the csv is recommended.
-To use the appropriate column during training the `data.pathcol` must be set to right value.
+More generally, the column name must match the value of `data.pathcol`.
 For examples see [MOSNet](alignnet/config/models/pretrain-MOSNet.yaml) or [MultiScaleConvolution](alignnet/config/models/pretrain-msc.yaml).
 
 
@@ -124,7 +125,7 @@ python inference.py --help
 
 In general three overrides must be set:
 * `model.path` - path to a trained model
-* `data.data_files` - list containing absolute paths to csv files to perform inference on.
+* `data.data_files` - list containing absolute paths to csv files that list audio files to perform inference on.
 * `output.file` - path to file where inference output will be stored.
 
 After running inference a csv will be created at `output.file` with the following columns:
@@ -133,7 +134,7 @@ After running inference a csv will be created at `output.file` with the followin
 * `dataset` - index for which file from `data.data_files` this file belongs to.
 * `AlignNet dataset index` - index for which dataset within the model the scores come from. This will be the same for every file in the csv. The default dataset will always be the reference dataset but this can be overriden via `model.dataset_index`.
 
-For example to run inference using the included AlignNet model trained on the smaller datasets one would run
+For example, to run inference using the included AlignNet model trained on the smaller datasets one would run
 ```
 python inference.py \
 data.data_files=[/absolute/path/to/inference/data1.csv,/absolute/path/to/inference/data2.csv] \
@@ -143,7 +144,7 @@ output.file=estimations.csv
 
 
 # Gathering datasets used in 2024 Conference Paper
-All of the data used in the paper can be found through the following links and references.
+Here are links and reference to help with locating the data we have used in the paper.
 
 * [Blizzard 2021](https://www.cstr.ed.ac.uk/projects/blizzard/data.html)
   *  Z.-H. Ling, X. Zhou, and S. King, "The Blizzard challenge 2021," in Proc. Blizzard Challenge Workshop, 2021.
