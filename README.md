@@ -1,5 +1,5 @@
 # Dataset Alignment
-This code corresponds to the paper "AlignNet: Learning dataset score alignment functions to enable better training of speech quality estimators" Jaden Pieper, Steve Voran [Link to Paper here](XXX).
+This code corresponds to the paper "AlignNet: Learning dataset score alignment functions to enable better training of speech quality estimators" Jaden Pieper, Steve Voran, to appear in Proc. Interspeech 2024 and with [preprint available here](https://arxiv.org/abs/2406.10205).
 
 When training a no-reference (NR) speech quality estimator, multiple datasets provide more information and can thus lead to better training. But they often are inconsistent in the sense that they use different subjective testing scales, or the exact same scale is used differently by test subjects due to the corpus effect.
 AlignNet improves the training of NR speech quality estimators with multiple, independent datasets. AlignNet uses an AudioNet to generate intermediate score estimates before using the Aligner to map intermediate estimates to the appropriate score range.
