@@ -3,7 +3,7 @@ app_name: AlignNet
 header: == Training ${hydra.help.app_name} ==
 
 footer: |-
-    Powered by Hydra (https://hyrda.cc)
+    Powered by Hydra (https://hydra.cc)
     Use --hydra-help to view Hydra specific help.
 
 template: |-

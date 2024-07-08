@@ -170,7 +170,7 @@ class AudioData(Dataset):
 
         # Concatenate into one tensor
         audio_out = torch.stack(audio_out, dim=0)
-        # If a transform is defined and the transform time is at collate now is the time to apply it
+        # If a transform is defined and the transform time is at collate, now is the time to apply it
         if self.transform is not None and self.transform_time == "collate":
             audio_out = self.transform.transform(audio_out)
         audio_out = torch.unsqueeze(audio_out, dim=1)
@@ -179,7 +179,7 @@ class AudioData(Dataset):
 
 class FeatureData(AudioData):
     """
-    For loading pre-computed features for audio files. Only the __getitem__ method needs to change
+    For loading pre-computed features for audio files. Only the __getitem__ method is changed
     """
 
     def __init__(
@@ -229,7 +229,7 @@ class FeatureData(AudioData):
             audio = self.wavs[audio_path]
         else:
             fname, ext = os.path.splitext(audio_path)
-            # If using same split csvs as audio this may say wav and not pt
+            # If using same split csvs as audio, this may say wav and not pt
             # (coming out of pretransform_data.py will save as pt)
             if ext == ".wav":
                 audio_path = fname + ".pkl"
@@ -296,7 +296,7 @@ class AudioDataModule(pl.LightningDataModule):
         """
         super().__init__()
 
-        # If this class sees batch_size=auto it sets to default value and assumes a Tuner is being called in the main
+        # If this class sees batch_size=auto, it sets to default value and assumes a Tuner is being called in the main
         # logic to update this later
         if batch_size == "auto":
             batch_size = 32
@@ -313,11 +313,11 @@ class AudioDataModule(pl.LightningDataModule):
         """
         Load different datasubsets depending on stage.
 
-        If stage == 'fit' then train, valid, and test data are loaded.
+        If stage == 'fit', then train, valid, and test data are loaded.
 
-        If stage == 'test' then only test data is loaded.
+        If stage == 'test', then only test data is loaded.
 
-        If stage == 'predict' then self.data_dirs should be full paths to the specific 
+        If stage == 'predict', then self.data_dirs should be full paths to the specific 
         csv files to run predictions on.
 
         Parameters
@@ -382,7 +382,7 @@ class AudioDataModule(pl.LightningDataModule):
 
     def find_datasubset(self, data_path, subset):
         """
-        Helper function for setup to find the different data subsets (test/train/valid)
+        Helper function for setup to find the different data subsets (train/valid/test)
 
         Parameters
         ----------

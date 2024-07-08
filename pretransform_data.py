@@ -111,12 +111,12 @@ def transform_csv(
     target_fs : int
         Target sample rate. Audio will be resampled to this prior to transform if needed.
     pathcol : str, optional
-        Column in csv that contains audio file names, by default "filename"
+        Column in csv that contains audio filenames, by default "filename"
     """
     # Load csv int dataframe
     df = pd.read_csv(csv_list)
     for ix, row in tqdm(df.iterrows(), total=len(df)):
-        # Get file name
+        # Get filename
         fname = row[pathcol]
         # Create file path
         fpath = os.path.join(datapath, fname)

@@ -98,7 +98,7 @@ class LinearSequence(nn.Module):
         activation : nn.Module
             Activation to include between layers. There will always be n_layers - 1 activations in the sequence.
         layer_dims : list
-            List of layer dimensions, not including input features (these are specificed by in_features).
+            List of layer dimensions, not including input features (these are specified by in_features).
         """
         super().__init__()
         if layer_dims is not None and n_layers != len(layer_dims):
@@ -112,10 +112,10 @@ class LinearSequence(nn.Module):
 
     def setup_layers(self, n_layers):
         """
-        Setup and store layers into `output_layers` attribute.
+        Set up and store layers into `output_layers` attribute.
 
         If `self.layer_dims` is not None, linear layers are made that match the
-        dimension of that list. If it is none, layers are made such that the dimension
+        dimension of that list. If it is None, layers are made such that the dimension
         decreases by 1/2 for each layer.
 
         Parameters
@@ -162,7 +162,7 @@ class LinearSequence(nn.Module):
         Returns
         -------
         torch.Tensor
-            Frame based representation of audio (e.g. feature x frames tensor for each audio file).
+            Frame-based representation of audio (e.g., features x frames tensor for each audio file).
         """
         for k, layer in enumerate(self.output_layers):
             frame_scores = layer(frame_scores)
@@ -252,7 +252,7 @@ class MOSNet(nn.Module):
             # num_layers - number of recurrent layers
             num_layers=1,
             # bias - bool if bias weight used (defaults to True)
-            # batch_first - if True then input and output tensors are provided as (batch, seq, feature) instead of (seq, batch, feature)
+            # batch_first - if True, then input and output tensors are provided as (batch, seq, feature) instead of (seq, batch, feature)
             batch_first=True,
             # dropout
             # bidirectional
@@ -276,7 +276,7 @@ class MOSNet(nn.Module):
         # x dim: (B, C, T, F) = (B, T, 1, 257)
         y = self.convolutions(x)
         # y dim: (B, C, T, F) = (B, 128, T, 4)
-        # Swap dimensions to preserve frame level time before flattening for BLSTM
+        # Swap dimensions to preserve frame-level time before flattening for BLSTM
         y = torch.movedim(y, -2, -3).flatten(start_dim=-2, end_dim=-1)
         # y dim: (B, T, F*C): (B, T, 512)
         y, _ = self.blstm(y)
@@ -319,7 +319,7 @@ class AudioConvolutionalBlock(nn.Module):
         dilation : int, optional
             Convolution dilation, by default 1
         pooling_type : str, optional
-            Type of pooling to perform. Either "average", "blur", or "None", by default "average".
+            Type of pooling to perform: "average", "blur", or "None", by default "average".
 
         """
         super().__init__()
@@ -511,8 +511,8 @@ class MultiScaleConvolution(nn.Module):
     def __init__(self, path1, path2, path3, path4):
         """
         Neural network that processes audio in up to four independent paths prior to
-        combining in a fully connected sequence. Each path is compressed to be the same
-        size regardless of audio length through simple statistical aggregations.
+        combining in a fully connected sequence. By means of simple statistical 
+        aggregations, each path is compressed to the same size, regardless of audio length.
 
         Parameters
         ----------
@@ -547,7 +547,7 @@ class MultiScaleConvolution(nn.Module):
 
     def forward(self, x):
         if len(x.shape) > 3 and x.shape[1] == 1:
-            # This may not be the best place/way to do this but should work on mono audio
+            # This may not be the best place/way to do this, but should work on mono audio
             x = torch.squeeze(x, dim=1)
         path_outs = []
         for conv_path in self.conv_paths:
@@ -576,9 +576,9 @@ class NoAligner(nn.Module):
         Parameters
         ----------
         reference_index : int, optional
-            Unused but exists to easily replace other Aligner setups, by default 0
+            Unused, but exists to easily replace other Aligner setups, by default 0
         num_datasets : int, optional
-            Unused but exists to easily replace other Aligner setups, by default 0
+            Unused, but exists to easily replace other Aligner setups, by default 0
         """
         super().__init__()
         self.reference_index = reference_index
@@ -613,7 +613,7 @@ class LinearSequenceAligner(nn.Module):
         embedding_dim : int, optional
             Size of the dataset index embedding, by default 10
         layer_dims : list, optional
-            Dimensions of the Aligner fully connected layers, by default [16, 16, 16, 16, 1]
+            Dimensions of the Aligner's fully connected layers, by default [16, 16, 16, 16, 1]
         """
         super().__init__()
         self.reference_index = reference_index
@@ -653,11 +653,11 @@ class AlignNet(nn.Module):
         audio_net : nn.Module
             Network component that maps audio to quality on the reference dataset scale.
         aligner : nn.Module
-            Network componenent that maps intermediate quality estimates and dataset
+            Network component that maps intermediate quality estimates and dataset
             indicators to the appropriate dataset score.
         aligner_corr_threshold : float, optional
             Correlation threshold that determines when the aligner is activated.
-            If None the aligner turns on immediately, by default None
+            If None, the aligner turns on immediately, by default None
         audio_net_freeze_epochs : int, optional
             Number of epochs to keep the audio_net frozen, by default 0
         """
@@ -730,7 +730,7 @@ class Model(pl.LightningModule):
         loss_weights : list
             List of weights to compute weighted average of loss over datasets. If None, then loss is computed without
             respect to datasets. In the case where one dataset has significantly less data, a weighted average allows
-            more control to ensure it is properly learned. If loss_weights = 1, then the all datasets will get equal weight.
+            more control to ensure it is properly learned. If loss_weights = 1, then all the datasets will receive equal weight.
         """
         super().__init__()
         # self.save_hyperparameters(ignore=["network", "loss"])
@@ -767,7 +767,7 @@ class Model(pl.LightningModule):
         torch.tensor
             Loss.
         """
-        # If there are loss weights use them
+        # If there are loss weights, use them
         if self.loss_weights is not None:
             loss = 0
             for dix in torch.unique(dataset):
@@ -799,8 +799,8 @@ class Model(pl.LightningModule):
         mos = mos.float() 
 
         mean_estimate = self.network(audio, dataset)
-        # If audio is 2-D (e.g. wav2vec representation) needs to be squeezed in diminsion 1 here
-        # If audio is raw wav this won't do anything (dim 1 will be frames and != 1)
+        # If audio is 2-D (e.g., wav2vec representation), needs to be squeezed in diminsion 1 here
+        # If audio is raw wav, this won't do anything (dim 1 will be frames and != 1)
         mean_estimate = torch.squeeze(mean_estimate, dim=1)
 
         loss = self.loss_calc(mean_estimate, mos, dataset)
@@ -834,8 +834,8 @@ class Model(pl.LightningModule):
 
     def validation_step(self, val_batch, idx):
         """
-        Validtion step. Unlike the training and test steps, we need to store per
-        dataset information here.
+        Validation step. Unlike the training and test steps, we need to store 
+        per-dataset information here.
         """
         audio, mos, dataset = val_batch
         mos = mos.float()
@@ -854,20 +854,20 @@ class Model(pl.LightningModule):
 
     def on_validation_epoch_end(self) -> None:
         """
-        At the end of validation epochs we calculate per dataset statistics.
+        At the end of validation epochs we calculate per-dataset statistics.
         """
         # Concatenate stored epoch data into single tensor for each metric
         estimates = torch.cat(self.validation_step_info["outputs"], dim=0)
         targets = torch.cat(self.validation_step_info["targets"], dim=0)
         datasets = torch.cat(self.validation_step_info["datasets"], dim=0)
 
-        # Overall loss and correlatoin
+        # Overall loss and correlation
         loss = self.loss_calc(estimates, targets, datasets)
         corrcoef = self.pearsons_corr(estimates, targets)
 
         # Check if network has a use_aligner flag
         if hasattr(self.network, "use_aligner"):
-            # If aligner is off and we have passed the correlation threshold do the updates
+            # If aligner is off and we have passed the correlation threshold, do the updates
             if (
                 not self.network.use_aligner
                 and corrcoef > self.network.aligner_corr_threshold
@@ -900,7 +900,7 @@ class Model(pl.LightningModule):
         for k, v in self.validation_step_info.items():
             v.clear()
 
-        # If we aren't updating audio-net and our epoch has passed the wait time turn it on!
+        # If we aren't updating audio-net and our epoch has passed the wait time, turn it on!
         if (
             not self.network.update_audio_net
             and self.epoch >= self.network.audio_net_freeze_epochs

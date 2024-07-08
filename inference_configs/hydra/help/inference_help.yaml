@@ -3,7 +3,7 @@ app_name: AlignNet
 header: == Using ${hydra.help.app_name} at inference==
 
 footer: |-
-    Powered by Hydra (https://hyrda.cc)
+    Powered by Hydra (https://hydra.cc)
     Use --hydra-help to view Hydra specific help.
 
 template: |-
@@ -11,10 +11,10 @@ template: |-
 
   This is the ${hydra.help.app_name} inference program!
 
-  To use a model at inference you must override three parameters:
+  To use a model at inference, you must override three parameters:
   * model.path : str pointing to the path containing a trained model 
     (must have a `model.ckpt` and `config.yaml` file in path.)
-  * data.data_files : list containing paths to csv files with file paths to perform inference on.
+  * data.data_files : list containing paths to csv files with filepaths to perform inference on.
     The path name of the csv must correspond to `data.pathcol` which can be overriden.
   * output.file : str to filepath where outputs will be saved.
 
@@ -26,7 +26,7 @@ template: |-
 
   == Config ==
   This is the config generated for this run.
-  You can override everything, for example to switch to an audio input type and see all the options run:
+  You can override everything. For example, to switch to an audio input type and see all the options, run:
   
   ```
   python inference.py input_type=audio --help
@@ -42,7 +42,7 @@ template: |-
   $CONFIG
   -------
   
-  To see the config of an example command directly without running it add 
+  To see the config of an example command directly without running it, add 
   `--cfg job` to your command.
 
   ${hydra.help.footer}

@@ -175,7 +175,7 @@ def main(cfg: DictConfig) -> None:
         except MissingConfigError as E:
             print(f"{E}")
             print(
-                f"If you do not want to install clearML and avoid this error in the future set `logging=none` override."
+                f"If you do not want to install clearML and want to avoid this error in the future, set `logging=none` override."
             )
             task = None
     else:
@@ -215,7 +215,7 @@ def main(cfg: DictConfig) -> None:
 
     callbacks = [checkpoint_callback]
     if "earlystop" in cfg:
-        # Earlystop needs monitor (e.g., val-loss) and mode (e.g., min). This can be added via CLI/cfg, otherwise steal the checkpoint values.
+        # Earlystop needs monitor (e.g., val-loss) and mode (e.g., min). This can be added via CLI/cfg. Otherwise steal the checkpoint values.
         stop_params = {"monitor": None, "mode": None}
         for k, _ in stop_params.items():
             if k in cfg.earlystop:
@@ -275,12 +275,11 @@ def main(cfg: DictConfig) -> None:
         cfg.model, network=network, loss=loss, optimizer=optimizer
     )
     print(model)
-    # This is actually automatically stored in the .hydra folder...
-    # Save a version of the config
 
     # Add working directory to config
     with open_dict(cfg):
         cfg.project.working_dir = os.getcwd()
+    # Save a version of the config
     cfg_yaml = OmegaConf.to_yaml(cfg)
     cfg_out = "input_config.yaml"
     with open(cfg_out, "w") as file:

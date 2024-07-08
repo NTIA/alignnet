@@ -35,16 +35,16 @@ def get_split_numbers(n_audio, split_fraction):
 
 def split_df_by_column(df, split_col, split_names, split_fraction):
     """
-    Generate dictionary of indices for splitting up a DataFrame while maintaing
+    Generate dictionary of indices for splitting up a DataFrame while maintaining
     balance within splits for a single column.
 
     Split dataframe while maintaining balance of elements within a specific column.
 
-    For example if there are n conditions that are labelled within a certain column
-    this can ensure that the proper ratio of conditions are maintained within the
-    test, train, and validation datasets. E.g. 80% of the data is condition A,
-    15% is condition B, and 5% is condition C, then those same ratios will be
-    preserved in each of the train, test, and validation datasets.
+    Note that if there are n conditions labelled within a certain column, this  
+    ensures that the proper ratio of conditions is maintained within the train, validation, 
+    and test datasets. For example, if 80% of the data is condition A, 
+    15% is condition B, and 5% is condition C, then those percentage ratios will 
+    be preserved in each of the train, validation, and test datasets.
 
 
     Parameters
@@ -89,7 +89,7 @@ def split_df(df, split_names, split_fraction):
     """
     Generate dictionary of indices for splitting up a DataFrame.
 
-    Dictionary keys are defined by split_names and the number of items in each
+    Dictionary keys are defined by split_names and the number of items in each key
     is determined by split_fraction.
 
     Parameters
@@ -146,7 +146,7 @@ def main(args, n=None):
         split_ix = split_df(score_df, args.split_names, args.split_fraction)
     else:
         split_ix = split_df_by_column(
-            # Split arcording to the split_column
+            # Split according to the split_column
             score_df,
             args.split_column,
             args.split_names,
@@ -162,7 +162,7 @@ def main(args, n=None):
 
 if __name__ == "__main__":
     parser = ArgumentParser(
-        description="Split a label_file containing target and pathcol for audio file into train, test, and valid csvs.",
+        description="Split a label_file containing target and pathcol for audio file into train, valid, and test csvs.",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
@@ -198,8 +198,8 @@ if __name__ == "__main__":
         type=str,
         default=None,
         help=(
-            "Column for which data should be split according to split-fraction (e.g. force distributions of values in "
-            "that column across each data set.)"
+            "Column for which data should be split according to split-fraction (e.g., force distributions of values in "
+            "that column across each dataset.)"
         ),
     )
 
