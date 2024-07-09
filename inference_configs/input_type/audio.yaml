@@ -1,0 +1,9 @@
+# @package _global_
+data:
+  _target_: alignnet.AudioData
+  fs: 16000
+  time_dim: 1
+  pathcol: audio_path
+
+dataclass:
+  path: 

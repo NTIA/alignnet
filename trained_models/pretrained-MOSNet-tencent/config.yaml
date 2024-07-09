@@ -1,0 +1,17 @@
+model:
+  _target_: alignnet.Model
+network:
+  _target_: alignnet.AlignNet
+  aligner_corr_threshold: -1
+  audio_net:
+    _target_: alignnet.MOSNet
+  aligner:
+    _target_: alignnet.LinearSequenceAligner
+    layer_dims:
+    - 32
+    - 32
+    - 32
+    - 32
+    - 1
+    reference_index: 0
+    num_datasets: 1

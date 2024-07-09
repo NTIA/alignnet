@@ -1,0 +1,39 @@
+app_name: AlignNet
+
+header: == Training ${hydra.help.app_name} ==
+
+footer: |-
+    Powered by Hydra (https://hydra.cc)
+    Use --hydra-help to view Hydra specific help.
+
+template: |-
+  ${hydra.help.header}
+
+  This is the ${hydra.help.app_name} training program!
+  
+  == Configuration groups ==
+  Compose your configuration from those groups (db=mysql)
+
+  $APP_CONFIG_GROUPS
+
+  == Config ==
+  This is the config generated for this run.
+  You can override everything, for example to set the logger to none and loss to L1 run:
+  
+  ```
+  python train.py logging=none loss=L1 --help
+  ```
+  
+  For another example, to see the config file and all overrideable parameters for 
+  training MOSNet with AlignNet run:
+  ```
+  python train.py --config-dir alignnet/config/models --config-name=alignnet-MOSNet --cfg job
+  ```
+  -------
+  $CONFIG
+  -------
+  
+  To see the config of an example command directly without running it add 
+  `--cfg job` to your command.
+
+  ${hydra.help.footer}

@@ -1,0 +1,6 @@
+# @package _global_
+data:
+  _target_: alignnet.FeatureData
+  fs: null
+  flatten: false
+  pathcol: stft_path

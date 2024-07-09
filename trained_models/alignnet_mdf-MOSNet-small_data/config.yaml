@@ -1,0 +1,20 @@
+model:
+  _target_: alignnet.Model
+  loss_weights: 1
+network:
+  _target_: alignnet.AlignNet
+  aligner_corr_threshold: -1
+  audio_net:
+    _target_: alignnet.MOSNet
+  aligner:
+    _target_: alignnet.LinearSequenceAligner
+    layer_dims:
+    - 16
+    - 16
+    - 16
+    - 16
+    - 1
+    reference_index: 0
+    embedding_dim: 10
+    num_datasets: 9
+  audio_net_freeze_epochs: 1

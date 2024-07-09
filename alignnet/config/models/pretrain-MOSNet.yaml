@@ -1,0 +1,77 @@
+hydra:
+    run:
+        dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job:
+        chdir: True
+
+defaults:
+  - logging: clearml
+  - loss: L2
+  - _self_
+
+project:
+  name: Dataset Alignment
+  task: Pretrain-MOSNet
+
+finetune:
+  restore_file: null
+
+common:
+  seed: 1234
+  auto_batch_size: false
+  lr: 0.0001
+
+data:
+  _target_: alignnet.AudioDataModule
+  data_dirs: ???
+  batch_size: 16
+  num_workers: 6
+  transform_time: get
+  cache: false
+  fs: null
+  flatten: false
+  pathcol: stft_path
+
+dataclass:
+  _target_: hydra.utils.get_class
+  path: alignnet.FeatureData
+
+optimization:
+  _target_: pytorch_lightning.Trainer
+  accelerator: gpu
+  devices:
+  - 0
+  log_every_n_steps: 5
+  max_epochs: 200
+  precision: 16-mixed
+
+earlystop:
+  _target_: pytorch_lightning.callbacks.early_stopping.EarlyStopping
+  patience: 20
+
+model:
+  _target_: alignnet.Model
+
+network:
+  _target_: alignnet.AlignNet
+  aligner_corr_threshold: null
+  audio_net:
+    _target_: alignnet.MOSNet
+  aligner:
+    _target_: alignnet.NoAligner
+
+checkpoint:
+  _target_: pytorch_lightning.callbacks.ModelCheckpoint
+  monitor: val_loss
+  mode: min
+  filename: '{epoch}-{val_loss:.4f}'
+  save_top_k: 5
+  every_n_epochs: 1
+  every_n_train_steps: null
+
+optimizer:
+  _target_: alignnet.OptimizerWrapper
+  class_name: torch.optim.Adam
+
+transform:
+  _target_: alignnet.NoneTransform
