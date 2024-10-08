@@ -40,10 +40,10 @@ def split_df_by_column(df, split_col, split_names, split_fraction):
 
     Split dataframe while maintaining balance of elements within a specific column.
 
-    Note that if there are n conditions labelled within a certain column, this  
-    ensures that the proper ratio of conditions is maintained within the train, validation, 
-    and test datasets. For example, if 80% of the data is condition A, 
-    15% is condition B, and 5% is condition C, then those percentage ratios will 
+    Note that if there are n conditions labelled within a certain column, this
+    ensures that the proper ratio of conditions is maintained within the train,
+    validation, and test datasets. For example, if 80% of the data is condition A,
+    15% is condition B, and 5% is condition C, then those percentage ratios will
     be preserved in each of the train, validation, and test datasets.
 
 
@@ -57,7 +57,8 @@ def split_df_by_column(df, split_col, split_names, split_fraction):
     split_names : list
         List of names for output csvs, used as keys in output dict.
     split_fraction : list
-        Fraction of df to go into each dictionary item (ordered according to split_names).
+        Fraction of df to go into each dictionary item (ordered according to
+        split_names).
 
     Returns
     -------
@@ -99,7 +100,8 @@ def split_df(df, split_names, split_fraction):
     split_names : list
         List of names for output csvs, used as keys in output dict.
     split_fraction : list
-        Fraction of df to go into each dictionary item (ordered according to split_names).
+        Fraction of df to go into each dictionary item (ordered according to
+        split_names).
 
     Returns
     -------
@@ -131,7 +133,10 @@ def split_df(df, split_names, split_fraction):
 def main(args, n=None):
     if len(args.split_fraction) != len(args.split_names):
         raise ValueError(
-            f"Split fraction and split names must be same length, {len(args.split_fraction)} != {len(args.split_names)}"
+            (
+                f"Split fraction and split names must be same length, "
+                f"{len(args.split_fraction)} != {len(args.split_names)}"
+            )
         )
     output_dir = args.output_dir
 
@@ -162,7 +167,10 @@ def main(args, n=None):
 
 if __name__ == "__main__":
     parser = ArgumentParser(
-        description="Split a label_file containing target and pathcol for audio file into train, valid, and test csvs.",
+        description=(
+            "Split a label_file containing target and pathcol for audio file "
+            "into train, valid, and test csvs."
+        ),
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
@@ -190,7 +198,10 @@ if __name__ == "__main__":
         nargs="+",
         type=float,
         default=[0.8, 0.1, 0.1],
-        help="Amount of data to use for each split-name. Must sum to 1 and be same length as --split-names.",
+        help=(
+            "Amount of data to use for each split-name. Must sum to 1 and be "
+            "same length as --split-names."
+        ),
     )
 
     parser.add_argument(
@@ -198,8 +209,8 @@ if __name__ == "__main__":
         type=str,
         default=None,
         help=(
-            "Column for which data should be split according to split-fraction (e.g., force distributions of values in "
-            "that column across each dataset.)"
+            "Column for which data should be split according to split-fraction "
+            "(e.g., force distributions of values in that column across each dataset.)"
         ),
     )
 
