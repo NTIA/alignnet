@@ -87,7 +87,7 @@ class LinearSequence(nn.Module):
         last_activate=False,
     ):
         """
-        Generate a sequence of n_layers Fully Connected (nn.linear) layers with activation.
+        Generate sequence of n_layers Fully Connected (nn.linear) layers with activation
 
         Parameters
         ----------
@@ -96,9 +96,11 @@ class LinearSequence(nn.Module):
         in_features : int
             Number of features in input
         activation : nn.Module
-            Activation to include between layers. There will always be n_layers - 1 activations in the sequence.
+            Activation to include between layers. There will always be
+            (n_layers - 1) activations in the sequence.
         layer_dims : list
-            List of layer dimensions, not including input features (these are specified by in_features).
+            List of layer dimensions, not including input features (these are
+            specified by in_features).
         """
         super().__init__()
         if layer_dims is not None and n_layers != len(layer_dims):
@@ -162,7 +164,8 @@ class LinearSequence(nn.Module):
         Returns
         -------
         torch.Tensor
-            Frame-based representation of audio (e.g., features x frames tensor for each audio file).
+            Frame-based representation of audio (e.g., features x frames tensor
+            for each audio file).
         """
         for k, layer in enumerate(self.output_layers):
             frame_scores = layer(frame_scores)
@@ -186,7 +189,8 @@ class ConvBlock(nn.Module):
         super().__init__()
         self.block = nn.Sequential(
             # Input shape: (B, T, in_channels, N)
-            # Output shape: (B, T, out_channels, ceil(N/3)) (stride 3 in freq of last convolutional layer causes decrease)
+            # Output shape: (B, T, out_channels, ceil(N/3)) (stride 3 in freq
+            # of last convolutional layer causes decrease)
             nn.Conv2d(
                 in_channels=in_channels,
                 out_channels=out_channels,
@@ -224,15 +228,16 @@ class MOSNet(nn.Module):
         self,
     ):
         """
-        Implement MOSNet architecture, mostly as described in "MOSNet: Deep Learning based
-        Objective Assessment for Voice Conversion" by Lo et al. (2019).
+        Implement MOSNet architecture, mostly as described in "MOSNet: Deep
+        Learning based Objective Assessment for Voice Conversion" by Lo et al. (2019).
 
         Unlike the original, this implementation does not implement frame-level loss.
         """
         super().__init__()
         self.convolutions = nn.Sequential(
             # Input shape: (B, 1, T, 257)
-            # Output shape: (B, 16, T, 86) (stride 3 in freq of last convolutional layer causes decrease)
+            # Output shape: (B, 16, T, 86) (stride 3 in freq of last convolutional
+            # layer causes decrease)
             ConvBlock(1, 16),
             # Input shape: (B, 16, T, 86)
             # Output shape: (B, 32, T, 29)
@@ -252,12 +257,15 @@ class MOSNet(nn.Module):
             # num_layers - number of recurrent layers
             num_layers=1,
             # bias - bool if bias weight used (defaults to True)
-            # batch_first - if True, then input and output tensors are provided as (batch, seq, feature) instead of (seq, batch, feature)
+            # batch_first - if True, then input and output tensors are provided
+            # as (batch, seq, feature) instead of (seq, batch, feature)
             batch_first=True,
             # dropout
             # bidirectional
             bidirectional=True,
-        )  # (B, T, 256=2*128), 2 b/c bidirectional==True, 128 b/c hidden_size=128 and proj_size=0
+        )
+        # (B, T, 256=2*128), 2 b/c bidirectional==True, 128 b/c hidden_size=128
+        # and proj_size=0
         self.fc = nn.Sequential(
             nn.Linear(
                 in_features=256,
@@ -319,7 +327,8 @@ class AudioConvolutionalBlock(nn.Module):
         dilation : int, optional
             Convolution dilation, by default 1
         pooling_type : str, optional
-            Type of pooling to perform: "average", "blur", or "None", by default "average".
+            Type of pooling to perform: "average", "blur", or "None", by default
+            "average".
 
         """
         super().__init__()
@@ -412,20 +421,20 @@ class ConvPath(nn.Module):
             List of kernel sizes within the path. The length of kernels determines
             the number of elements in the convolutional path.
         strides : list
-            List of strides within the path. Can be one element list and will be repeated
-            to be the same length as kernels.
+            List of strides within the path. Can be one element list and will be
+            repeated to be the same length as kernels.
         dilations : list
-            List of dilations within the path. Can be one element list and will be repeated
-            to be the same length as kernels.
+            List of dilations within the path. Can be one element list and will be
+            repeated to be the same length as kernels.
         channels : list
-            List of channels within the path. Can be one element list and will be repeated
-            to be the same length as kernels.
+            List of channels within the path. Can be one element list and will be
+            repeated to be the same length as kernels.
         paddings : list
-            List of paddings within the path. Can be one element list and will be repeated
-            to be the same length as kernels.
+            List of paddings within the path. Can be one element list and will be
+            repeated to be the same length as kernels.
         pooling_kernels : list, optional
-            List of poolings within the path. Can be one element list and will be repeated
-            to be same length as kernels, by default [None]
+            List of poolings within the path. Can be one element list and will be
+            repeated to be same length as kernels, by default [None]
         in_channel : int, optional
             Number of channels in first AudioConvolutionalBlock, by default 1
         rectify : bool, optional
@@ -478,7 +487,8 @@ class ConvPath(nn.Module):
                 pooling_kernel=pooling_kernel,
             )
 
-            # Set any additional AudioConvolutionalBlock parameters that have been passed in through kwargs
+            # Set any additional AudioConvolutionalBlock parameters that have
+            # been passed in through kwargs
             for k, v in kwargs.items():
                 if hasattr(conv_block, k):
                     setattr(conv_block, k, v)
@@ -499,7 +509,7 @@ class ConvPath(nn.Module):
 class IdentityBlock(nn.Module):
     def __init__(self, **kwargs):
         """
-        Identity block for audio-style processing that returns the input in the forward method.
+        Identity block for audio-style processing that returns the input in forward.
         """
         super().__init__()
 
@@ -511,19 +521,24 @@ class MultiScaleConvolution(nn.Module):
     def __init__(self, path1, path2, path3, path4):
         """
         Neural network that processes audio in up to four independent paths prior to
-        combining in a fully connected sequence. By means of simple statistical 
-        aggregations, each path is compressed to the same size, regardless of audio length.
+        combining in a fully connected sequence. By means of simple statistical
+        aggregations, each path is compressed to the same size, regardless of audio
+        length.
 
         Parameters
         ----------
         path1 : nn.Module
-            First of the four independent paths. Will be ignored if set to IdentityBlock.
+            First of the four independent paths. Will be ignored if set to
+            IdentityBlock.
         path2 : nn.Module
-            Second of the four independent paths. Will be ignored if set to IdentityBlock.
+            Second of the four independent paths. Will be ignored if set to
+            IdentityBlock.
         path3 : nn.Module
-            Third of the four independent paths. Will be ignored if set to IdentityBlock.
+            Third of the four independent paths. Will be ignored if set to
+            IdentityBlock.
         path4 : nn.Module
-            Fourth of the four independent paths. Will be ignored if set to IdentityBlock.
+            Fourth of the four independent paths. Will be ignored if set to
+            IdentityBlock.
         """
         super().__init__()
         paths = [path1, path2, path3, path4]
@@ -547,7 +562,8 @@ class MultiScaleConvolution(nn.Module):
 
     def forward(self, x):
         if len(x.shape) > 3 and x.shape[1] == 1:
-            # This may not be the best place/way to do this, but should work on mono audio
+            # This may not be the best place/way to do this, but should work on
+            # mono audio
             x = torch.squeeze(x, dim=1)
         path_outs = []
         for conv_path in self.conv_paths:
@@ -613,12 +629,13 @@ class LinearSequenceAligner(nn.Module):
         embedding_dim : int, optional
             Size of the dataset index embedding, by default 10
         layer_dims : list, optional
-            Dimensions of the Aligner's fully connected layers, by default [16, 16, 16, 16, 1]
+            Dimensions of the Aligner's fully connected layers, by default
+            [16, 16, 16, 16, 1]
         """
         super().__init__()
         self.reference_index = reference_index
         self.num_datasets = num_datasets
-        
+
         self.embedding_dim = embedding_dim
         self.embedding = torch.nn.Embedding(
             num_datasets, embedding_dim=self.embedding_dim
@@ -646,7 +663,8 @@ class AlignNet(nn.Module):
         self, audio_net, aligner, aligner_corr_threshold=None, audio_net_freeze_epochs=0
     ):
         """
-        AlignNet module that uses an audio_net with an aligner to train on multiple datasets at once.
+        AlignNet module that uses an audio_net with an aligner to train on
+        multiple datasets at once.
 
         Parameters
         ----------
@@ -728,12 +746,13 @@ class Model(pl.LightningModule):
         optimizer : OptimizerWrapper or torch.nn.optim class, optional
             Optimizer class, by default torch.optim.Adam
         loss_weights : list
-            List of weights to compute weighted average of loss over datasets. If None, then loss is computed without
-            respect to datasets. In the case where one dataset has significantly less data, a weighted average allows
-            more control to ensure it is properly learned. If loss_weights = 1, then all the datasets will receive equal weight.
+            List of weights to compute weighted average of loss over datasets.
+            If None, then loss is computed without respect to datasets. In the
+            case where one dataset has significantly less data, a weighted
+            average allows more control to ensure it is properly learned. If
+            loss_weights = 1, then all the datasets will receive equal weight.
         """
         super().__init__()
-        # self.save_hyperparameters(ignore=["network", "loss"])
         self.network = network
 
         self.loss = loss
@@ -788,7 +807,7 @@ class Model(pl.LightningModule):
 
     def _forward(self, training_batch):
         """
-        Internal forward method with logic consistent across all training and test steps.
+        Internal forward method with logic consistent across all training and test steps
 
         Parameters
         ----------
@@ -796,11 +815,13 @@ class Model(pl.LightningModule):
             All data in a training batch.
         """
         audio, mos, dataset = training_batch
-        mos = mos.float() 
+        mos = mos.float()
 
         mean_estimate = self.network(audio, dataset)
-        # If audio is 2-D (e.g., wav2vec representation), needs to be squeezed in diminsion 1 here
-        # If audio is raw wav, this won't do anything (dim 1 will be frames and != 1)
+        # If audio is 2-D (e.g., wav2vec representation), needs to be squeezed
+        # in diminsion 1 here
+        # If audio is raw wav, this won't do anything (dim 1 will be frames
+        # and != 1)
         mean_estimate = torch.squeeze(mean_estimate, dim=1)
 
         loss = self.loss_calc(mean_estimate, mos, dataset)
@@ -822,6 +843,9 @@ class Model(pl.LightningModule):
         cat = torch.cat([mean_estimate, mos], dim=1)
         cat = torch.transpose(cat, 0, 1)
 
+        # Really lazy solution
+        if len(cat.shape) > 2:
+            cat = cat[:, :, 0]
         corrcoef = torch.corrcoef(cat)[0, 1]
 
         return corrcoef
@@ -834,7 +858,7 @@ class Model(pl.LightningModule):
 
     def validation_step(self, val_batch, idx):
         """
-        Validation step. Unlike the training and test steps, we need to store 
+        Validation step. Unlike the training and test steps, we need to store
         per-dataset information here.
         """
         audio, mos, dataset = val_batch
@@ -867,7 +891,8 @@ class Model(pl.LightningModule):
 
         # Check if network has a use_aligner flag
         if hasattr(self.network, "use_aligner"):
-            # If aligner is off and we have passed the correlation threshold, do the updates
+            # If aligner is off and we have passed the correlation threshold, do
+            #  the updates
             if (
                 not self.network.use_aligner
                 and corrcoef > self.network.aligner_corr_threshold
@@ -878,7 +903,10 @@ class Model(pl.LightningModule):
                 for p in self.network.aligner.parameters():
                     p.requires_grad_(True)
                 print(
-                    f"Correlation threshold of {self.network.aligner_corr_threshold} reached with {corrcoef:.4f}. Turning on aligner."
+                    (
+                        f"Correlation threshold {self.network.aligner_corr_threshold} "
+                        f"reached with {corrcoef:.4f}. Turning on aligner."
+                    )
                 )
 
         self.log("val_loss", loss)
@@ -900,7 +928,8 @@ class Model(pl.LightningModule):
         for k, v in self.validation_step_info.items():
             v.clear()
 
-        # If we aren't updating audio-net and our epoch has passed the wait time, turn it on!
+        # If we aren't updating audio-net and our epoch has passed the wait time,
+        # turn it on!
         if (
             not self.network.update_audio_net
             and self.epoch >= self.network.audio_net_freeze_epochs
