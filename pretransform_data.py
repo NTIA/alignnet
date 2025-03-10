@@ -54,10 +54,11 @@ def transform_path_walk(datapath, outpath, transform, target_fs):
     outpath : str
         Path to save transformed files
     transform : transform
-        Transform from alignnet.transforms. Must have transform.transform(audio, **kwargs)
-        as a method.
+        Transform from alignnet.transforms. Must have
+        transform.transform(audio, **kwargs) as a method.
     target_fs : int
-        Target sample rate. Audio will be resampled to this prior to transform if needed.
+        Target sample rate. Audio will be resampled to this prior to transform
+        if needed.
     """
     failed_files = []
     for path, directories, files in os.walk(datapath):
@@ -106,10 +107,11 @@ def transform_csv(
     csv_list : str
         Path to csv file containing audio names to transform in pathcol
     transform : transform
-        Transform from alignnet.transforms. Must have transform.transform(audio, **kwargs)
-        as a method.
+        Transform from alignnet.transforms.
+        Must have transform.transform(audio, **kwargs) as a method.
     target_fs : int
-        Target sample rate. Audio will be resampled to this prior to transform if needed.
+        Target sample rate. Audio will be resampled to this prior to transform
+        if needed.
     pathcol : str, optional
         Column in csv that contains audio filenames, by default "filename"
     """
@@ -157,7 +159,10 @@ def main(datapath, outpath, transform_name, csv_list, **kwargs):
         time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         time_str = f"Running {__file__}\nStarted: {time}\n"
         outfile.write(time_str)
-        input_str = f"datapath={datapath}, outpath={outpath}, transform_name={transform_name}, csv_list={csv_list}\nkwargs: "
+        input_str = (
+            f"datapath={datapath}, outpath={outpath}, "
+            f"transform_name={transform_name}, csv_list={csv_list}\nkwargs: "
+        )
         for k, v in kwargs.items():
             input_str += f"{k}={v}, "
         outfile.write(f"Inputs: {input_str}")
@@ -166,7 +171,6 @@ def main(datapath, outpath, transform_name, csv_list, **kwargs):
             if v[0] != "_":
                 transform_str += f"{v}={getattr(transform, v)}, "
         outfile.write(transform_str)
-    c = 0
 
     _, ext = os.path.splitext(datapath)
     if csv_list is not None:
@@ -200,7 +204,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "transform_name",
         choices=["Mel", "STFT"],
-        help="Transform to apply. Corresponds to a transform class in alignnet.transforms",
+        help="Transform to use. Corresponds to transform class in alignnet.transforms",
     )
     parser.add_argument("datapath", type=str, help="Path to data to transform")
     parser.add_argument(
@@ -213,7 +217,10 @@ if __name__ == "__main__":
         "--target-fs",
         default=None,
         type=int,
-        help="Sample rate to resample audio to prior to transformation. If None, no resampling done.",
+        help=(
+            "Sample rate to resample audio to prior to transformation. If None, "
+            "no resampling done."
+        ),
     )
 
     parser.add_argument(
@@ -221,7 +228,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--win-overlap", default=256, type=int, help="Window overlap for an STFT."
+        "--fft-win-overlap", default=256, type=int, help="Window overlap for an STFT."
     )
 
     parser.add_argument(
@@ -240,7 +247,6 @@ if __name__ == "__main__":
         action="store_true",
         help="Take log10 of representations.",
     )
-
 
     args = parser.parse_args()
 

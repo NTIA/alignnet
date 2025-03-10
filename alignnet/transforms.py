@@ -32,7 +32,7 @@ class MelTransform:
             Window overlap, in samples.
 
         """
-        self.win_length = win_length
+        self.win_length = fft_win_length
         self.win_overlap = win_overlap
         self.n_mels = n_mels
 
@@ -79,7 +79,7 @@ class MelTransform:
 
 
 class STFTTransform:
-    def __init__(self, fft_win_length=512, win_overlap=256):
+    def __init__(self, fft_win_length=512, fft_win_overlap=256):
         """
         Short-time fourier transform.
 
@@ -87,11 +87,11 @@ class STFTTransform:
         ----------
         fft_win_length : int, optional
             Window length in samples, by default 512
-        win_overlap : int, optional
+        fft_win_overlap : int, optional
             Window overlap in samples, by default 256
         """
         self.fft_win_length = fft_win_length
-        self.win_overlap = win_overlap
+        self.fft_win_overlap = fft_win_overlap
 
     def transform(self, audio, **kwargs):
         """
@@ -115,7 +115,7 @@ class STFTTransform:
         stft = torch.stft(
             audio,
             n_fft=self.fft_win_length,
-            hop_length=self.fft_win_length - self.win_overlap,
+            hop_length=self.fft_win_length - self.fft_win_overlap,
             window=hann_window,
             return_complex=True,
             center=False,
