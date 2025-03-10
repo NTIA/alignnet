@@ -797,7 +797,7 @@ class Model(pl.LightningModule):
                 loss += weight * self.loss(sub_ests, sub_mos)
 
         else:
-            loss = self.loss(mos, mean_estimate)
+            loss = self.loss(mean_estimate, mos)
         return loss
 
     def forward(self, audio, dataset):
@@ -866,7 +866,7 @@ class Model(pl.LightningModule):
 
         mean_estimate = self.network(audio, dataset)
         mean_estimate = torch.squeeze(mean_estimate, dim=1)
-
+        
         loss = self.loss_calc(mean_estimate, mos, dataset)
 
         # Store per dataset information to be used at epoch end.
