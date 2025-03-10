@@ -177,6 +177,126 @@ class AudioData(Dataset):
         return audio_out, mos, dataset
 
 
+class MOSNetAudioData(AudioData):
+    def __init__(
+        self,
+        fft_win_length=512,
+        fft_win_overlap=256,
+        target_fs=16000,
+        fft_include_phase=False,
+        flatten=False,
+        smart_save=False,
+        *args,
+        **kwargs,
+    ):
+        """
+        Class to gracefully handle MOSNet feature prep with smart caching.
+
+        Parameters
+        ----------
+        fft_win_length : int, optional
+            FFT window length, by default 512
+        fft_win_overlap : int, optional
+            FFT window overlap, by default 256
+        target_fs : int, optional
+            Target sample rate, by default 16000
+        fft_include_phase : bool, optional
+            Include phase with FFT, by default False
+        flatten : bool, optional
+            Flatten into single dimension array, by default False
+        smart_save : bool or str, optional
+            Save calculated features based on parameters for easy reuse. Set to 
+            the parent path of where you want features to be saved, otherwise 
+            set to False to avoid saving. By default False
+        """        
+        super().__init__(**kwargs)
+        self.fft_win_length = fft_win_length
+        self.fft_win_overlap = fft_win_overlap
+        self.target_fs = target_fs
+        self.fft_include_phase = fft_include_phase
+        self.flatten = flatten
+        self.smart_save = smart_save
+        # Smart save must be a string that will be the parent path where we save
+        # all the features we compute within. The full data path will follow
+        # whatever smart_save is.
+        transform_params = [p for p in dir(self) if "fft" in p or "target_fs" in p]
+        if self.smart_save:
+            self.data_id = ""
+            for p in transform_params:
+                val = getattr(self, p)
+                self.data_id += f"{p}_{val}-"
+            self.data_id = self.data_id[:-1]
+            self.feature_path = os.path.join(smart_save, self.data_id)
+            os.makedirs(self.feature_path, exist_ok=True)
+        # Initialize transform
+        self.transform = transforms.STFTTransform()
+        # Assign relevant values to transform
+        for p in transform_params:
+            if hasattr(self.transform, p):
+                val = getattr(self, p)
+                setattr(self.transform, p, val)
+
+    def __getitem__(self, idx):
+        dataset = self.score_file.loc[idx, "Dataset_Indicator"]
+        mos = self.score_file.loc[idx, self.target]
+
+        if self.target_transform is not None:
+            mos = self.target_transform(mos, int(dataset))
+
+        audio_path = os.path.join(
+            self.data_path, self.score_file.loc[idx, self.pathcol]
+        )
+        if hasattr(self, "feature_path"):
+            # Check if we already computed this representation
+            if audio_path[0] == "/":
+                # Need to remove leading slash if we start with abspath
+                feature_path = os.path.join(self.feature_path, audio_path[1:])
+            else:
+                feature_path = os.path.join(self.feature_path, audio_path)
+        else:
+            feature_path = None
+
+        if hasattr(self, "wavs") and audio_path in self.wavs:
+            # Already loaded and cached the audio
+            audio = self.wavs[audio_path]
+        elif os.path.exists(feature_path):
+            # If feature path exists, load it
+            with open(feature_path, "rb") as f:
+                audio = pickle.load(f)
+        else:
+            # Load audio
+            audio, sample_rate = torchaudio.load(audio_path)
+
+            # Resample as needed
+            if self.target_fs is not None and sample_rate != self.target_fs:
+                resampler = torchaudio.transforms.Resample(
+                    sample_rate, self.target_fs, dtype=audio.dtype
+                )
+                audio = resampler(audio)
+                sample_rate = self.target_fs
+
+            if self.transform is not None and self.transform_time == "get":
+                # Apply transform
+                audio = self.transform.transform(audio)
+
+            # TODO figure out if this is the right place to do this
+            audio = audio.float()
+            if hasattr(self, "wavs"):
+                self.wavs[audio_path] = audio
+            # Store feature representaion if we are doing that
+            if feature_path is not None:
+                ppath = os.path.dirname(feature_path)
+                os.makedirs(ppath, exist_ok=True)
+                with open(feature_path, "wb") as f:
+                    pickle.dump(audio, f)
+        # This needs to happen outside of the loading and transforming audio
+        if self.flatten:
+            # Flatten by column
+            audio = audio.t().flatten()
+
+        return audio, mos, dataset
+
+
 class FeatureData(AudioData):
     """
     For loading pre-computed features for audio files. Only the __getitem__ method is changed
@@ -212,12 +332,12 @@ class FeatureData(AudioData):
 
     def __getitem__(self, idx):
         dataset = self.score_file.loc[idx, "Dataset_Indicator"]
-        
+
         if self.target is not None:
             mos = self.score_file.loc[idx, self.target]
         else:
             mos = None
-        
+
         if self.target_transform is not None:
             mos = self.target_transform(mos, int(dataset))
 
@@ -290,7 +410,7 @@ class AudioDataModule(pl.LightningDataModule):
             String that determines what type of collate function is used, by default
             "padding"
         **kwargs : optional
-            Additional arguments are passed to the DataClass when instantiated in 
+            Additional arguments are passed to the DataClass when instantiated in
             AudioDataModule.setup()
 
         """
@@ -317,7 +437,7 @@ class AudioDataModule(pl.LightningDataModule):
 
         If stage == 'test', then only test data is loaded.
 
-        If stage == 'predict', then self.data_dirs should be full paths to the specific 
+        If stage == 'predict', then self.data_dirs should be full paths to the specific
         csv files to run predictions on.
 
         Parameters

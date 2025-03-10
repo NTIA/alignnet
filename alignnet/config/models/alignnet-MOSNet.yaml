@@ -24,17 +24,18 @@ common:
 data:
   _target_: alignnet.AudioDataModule
   data_dirs: ???
+  smart_save: ???
   batch_size: 16
   num_workers: 6
   transform_time: get
   cache: false
-  fs: null
+  fs: 16000
   flatten: false
-  pathcol: stft_path
+  pathcol: audio_path
 
 dataclass:
   _target_: hydra.utils.get_class
-  path: alignnet.FeatureData
+  path: alignnet.MOSNetAudioData
 
 optimization:
   _target_: pytorch_lightning.Trainer
