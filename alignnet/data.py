@@ -170,7 +170,8 @@ class AudioData(Dataset):
 
         # Concatenate into one tensor
         audio_out = torch.stack(audio_out, dim=0)
-        # If a transform is defined and the transform time is at collate, now is the time to apply it
+        # If a transform is defined and the transform time is at collate, now
+        # is the time to apply it
         if self.transform is not None and self.transform_time == "collate":
             audio_out = self.transform.transform(audio_out)
         audio_out = torch.unsqueeze(audio_out, dim=1)
@@ -299,7 +300,8 @@ class MOSNetAudioData(AudioData):
 
 class FeatureData(AudioData):
     """
-    For loading pre-computed features for audio files. Only the __getitem__ method is changed
+    For loading pre-computed features for audio files. Only the __getitem__
+    method is changed
     """
 
     def __init__(
@@ -390,7 +392,8 @@ class AudioDataModule(pl.LightningDataModule):
         **kwargs,
     ):
         """
-        Primary audio data module that prepares data for training, testing, or predictions.
+        Primary audio data module that prepares data for training, testing, or
+        predictions.
 
         Parameters
         ----------
@@ -416,8 +419,8 @@ class AudioDataModule(pl.LightningDataModule):
         """
         super().__init__()
 
-        # If this class sees batch_size=auto, it sets to default value and assumes a Tuner is being called in the main
-        # logic to update this later
+        # If this class sees batch_size=auto, it sets to default value and
+        # assumes a Tuner is being called in the main logic to update this later
         if batch_size == "auto":
             batch_size = 32
         self.batch_size = batch_size
@@ -534,7 +537,10 @@ class AudioDataModule(pl.LightningDataModule):
             raise ValueError(f"Unable to find {subset} in {data_path}")
         elif len(out) > 1:
             warnings.warn(
-                f"Multiple matches for {subset} in {data_path}.\nOf {out} using {out[0]}"
+                (
+                    f"Multiple matches for {subset} in {data_path}.\n"
+                    "Of {out} using {out[0]}"
+                )
             )
             out = out[0]
         else:
