@@ -21,8 +21,8 @@ dependencies:
   - torchaudio=2.3.0
   - pip
   - pip:
-    - pandas=2.2.2
+    - pandas==2.2.2
     - pylance
     - sox
     - soundfile
-    - tensorboard=2.16.2
+    - tensorboard==2.16.2
