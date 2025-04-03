@@ -13,6 +13,8 @@ import pytorch_lightning as pl
 from tqdm import tqdm
 from torch.utils.data import Dataset, DataLoader
 
+from . import transforms as transforms
+
 
 class AudioData(Dataset):
     def __init__(
@@ -206,10 +208,10 @@ class MOSNetAudioData(AudioData):
         flatten : bool, optional
             Flatten into single dimension array, by default False
         smart_save : bool or str, optional
-            Save calculated features based on parameters for easy reuse. Set to 
-            the parent path of where you want features to be saved, otherwise 
+            Save calculated features based on parameters for easy reuse. Set to
+            the parent path of where you want features to be saved, otherwise
             set to False to avoid saving. By default False
-        """        
+        """
         super().__init__(**kwargs)
         self.fft_win_length = fft_win_length
         self.fft_win_overlap = fft_win_overlap
@@ -389,6 +391,7 @@ class AudioDataModule(pl.LightningDataModule):
         DataClass=AudioData,
         collate_type="padding",
         data_percent=1,
+        split=None,
         **kwargs,
     ):
         """
@@ -425,12 +428,46 @@ class AudioDataModule(pl.LightningDataModule):
             batch_size = 32
         self.batch_size = batch_size
         self.collate_type = collate_type
-        self.data_dirs = data_dirs
         self.DataClass = DataClass
         self.num_workers = num_workers
         self.persistent_workers = persistent_workers
 
         self.data_class_kwargs = kwargs
+
+        data_dirs = self.update_data_dir_splits(data_dirs, split)
+        self.data_dirs = data_dirs
+
+    def update_data_dir_splits(self, data_dirs, split):
+        """
+        Update splits if they are given
+
+        Parameters
+        ----------
+        data_dirs : _type_
+            _description_
+        split : _type_
+            _description_
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
+        # Handle dataset splits if they are given
+        if split is not None:
+            # We have a split --- regex to find it in data paths
+            split_search = re.compile(r"(split\d{2})")
+            # Split we want to replace with
+            split = f"split{split:02d}"
+            for ix, data_dir in enumerate(data_dirs):
+                search = split_search.search(data_dir)
+                if search:
+                    # If we have the split find the split string
+                    orig_split = search.groups()[0]
+                    # Replace
+                    data_dir = data_dir.replace(orig_split, split)
+                    data_dirs[ix] = data_dir
+        return data_dirs
 
     def setup(self, stage: str):
         """
@@ -578,6 +615,9 @@ class AudioDataModule(pl.LightningDataModule):
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             persistent_workers=self.persistent_workers,
+            # for any contrastive loss shuffling validation batches will provide more
+            # robust results
+            shuffle=True,
             collate_fn=collate_fn,
         )
 
