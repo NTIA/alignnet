@@ -392,6 +392,8 @@ class AudioDataModule(pl.LightningDataModule):
         collate_type="padding",
         data_percent=1,
         split=None,
+        inference_dirs=None,
+        silent_update=False,
         **kwargs,
     ):
         """
@@ -415,6 +417,14 @@ class AudioDataModule(pl.LightningDataModule):
         collate_type : str, optional
             String that determines what type of collate function is used, by default
             "padding"
+        data_percent : float, optional
+            Float between 0 and 1 to use only a fraction of the given data.
+        split : int, optional
+            If multiple splits of a given dataset exist in a directory and are named
+            splitXX will attempt to find the appropriate split regardless of what split
+            is specified by the paths in data_dirs.
+        inference_dirs : list, optional
+            List of paths to csv files containing data to evaluate with a trained model.
         **kwargs : optional
             Additional arguments are passed to the DataClass when instantiated in
             AudioDataModule.setup()
@@ -436,6 +446,7 @@ class AudioDataModule(pl.LightningDataModule):
 
         data_dirs = self.update_data_dir_splits(data_dirs, split)
         self.data_dirs = data_dirs
+        self.inference_dirs = inference_dirs
 
     def update_data_dir_splits(self, data_dirs, split):
         """
@@ -467,6 +478,7 @@ class AudioDataModule(pl.LightningDataModule):
                     # Replace
                     data_dir = data_dir.replace(orig_split, split)
                     data_dirs[ix] = data_dir
+            print(f"data_dirs updated:\n{data_dirs}")
         return data_dirs
 
     def setup(self, stage: str):
@@ -510,8 +522,13 @@ class AudioDataModule(pl.LightningDataModule):
                 **self.data_class_kwargs,
             )
         elif stage == "predict":
+            if self.inference_dirs is None:
+                # If we only passed in data_dirs we need to assign them to
+                # inference_dirs
+                self.inference_dirs = self.data_dirs
+            
             self.predict = self.DataClass(
-                data_files=self.data_dirs,
+                data_files=self.inference_dirs,
                 **self.data_class_kwargs,
             )
 
