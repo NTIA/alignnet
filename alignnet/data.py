@@ -456,7 +456,7 @@ class AudioDataModule(pl.LightningDataModule):
         # Handle dataset splits if they are given
         if split is not None:
             # We have a split --- regex to find it in data paths
-            split_search = re.compile(r"(split\d{2})")
+            split_search = re.compile(r"(split\d+)")
             # Split we want to replace with
             split = f"split{split:02d}"
             for ix, data_dir in enumerate(data_dirs):
